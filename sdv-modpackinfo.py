@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import yaml
 import json
 import sys
 import os
@@ -27,7 +26,7 @@ import urllib.request
 # To change the format, modify the lines below:
 
 # Markdown format:
-output_file = open('modlist.md', 'w')
+output_file = "modlist.md"
 format_url = "- [{Name}]({url}), v{Version} by **{Author}**: {Description}"
 format_nourl = "- {Name}, v{Version} by **{Author}**: {Description}"
 
@@ -42,11 +41,12 @@ def scan(basedir):
     path = os.path.join(basedir, file, "manifest.json")
     if os.path.exists(path):
       try:
-        with open(path) as f:
+        with open(path, encoding="utf-8-sig") as f:
           data = f.read()
-          data = data.replace("\t", " ")
+          # data = data.replace("\t", " ")
           data = re.sub("//.*?[\n]", "", data)
-          info = yaml.load(data, Loader=yaml.FullLoader)
+          data = re.sub(",\\s*([]}])", "\\1", data)
+          info = json.loads(data)
         
         # Some data sanitization
         if "MajorVersion" in info["Version"]:
@@ -156,21 +156,21 @@ def guess_url(info):
     print("Unrecognized updatekey for " + info["Name"] + ": '"+key+"'.", file=sys.stderr)
     return None  
 
-def report(info):
+def report(info, f_out):
   default(info, "Author", "(unknown)")
   default(info, "Description", "-")
 
   url = guess_url(info)
   
   if url:
-    print(format_url.format(url = url, **info), file=output_file)
+    print(format_url.format(url = url, **info), file=f_out)
   else:
-    print(format_nourl.format(**info), file=output_file)
+    print(format_nourl.format(**info), file=f_out)
 
 print("Writing output", file=sys.stderr)
-for i in mods:
-  report(i)
+with open(output_file, 'w') as f_out:
+  for i in mods:
+    report(i, f_out)
 
 print("Done ({0} mods, with {1} guessed and {2} better urls).".format(len(mods), stat_guessed, stat_better), file=sys.stderr)
 
-output_file.close()
