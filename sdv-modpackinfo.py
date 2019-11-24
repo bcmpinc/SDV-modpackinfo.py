@@ -33,6 +33,7 @@ mods = []
 def scan(basedir):
   res = False
   for file in os.listdir(basedir):
+    if file[0] == ".": continue
     path = os.path.join(basedir, file, "manifest.json")
     if os.path.exists(path):
       try:
