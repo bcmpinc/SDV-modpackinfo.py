@@ -28,15 +28,24 @@ import urllib.request
 formats = [
   dict(name="Markdown",
        output_file="modlist.md",
-       format_url="- [{Name}]({url}), v{Version} by **{Author}**: {Description}",
+       prefix="",
+       suffix="",
+       format_url   = "- [{Name}]({url}), v{Version} by **{Author}**: {Description}",
        format_nourl = "- {Name}, v{Version} by **{Author}**: {Description}"),
+  dict(name="HTML",
+       output_file="modlist.html",
+       prefix="<ul>",
+       suffix="</ul>",
+       format_url   = "<li><a href=\"{url}\">{Name}</a>, v{Version} by <strong>{Author}</strong>: {Description}</li>",
+       format_nourl = "<li>{Name}, v{Version} by <strong>{Author}</strong>: {Description}</li>"),
 ]
+
 
 # The directory that will be scanned for mods.
 mod_basedir = "Mods"
 
 # Request better mod info from smapi.io?
-request_smapi = False
+request_smapi = True
 
 ####################################
 
@@ -225,8 +234,10 @@ def report(info, f_out):
 print(file=sys.stderr)
 print("Writing {0} output to '{1}'".format(name, output_file), file=sys.stderr)
 with open(output_file, 'w') as f_out:
+  print(prefix, file=f_out)
   for i in mods:
     report(i, f_out)
+  print(suffix, file=f_out)
 
 print(file=sys.stderr)
 print("Done ({0} mods, with {1} guessed and {2} better urls).".format(len(mods), stat_guessed, stat_better), file=sys.stderr)
