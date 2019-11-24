@@ -17,6 +17,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+#
+# To run this program:
+# - Make sure you have python 3 installed
+# - Place this script in your Stardew Valley folder (ie. the one containing a folder named `Mods`).
+# - Execute this script
+# - Choose what output format you want.
+# - Output is written to a file `modlist.??` with `??` replaced by whatever is appropriate for the output format. 
+# 
+
 import json
 import sys
 import os
