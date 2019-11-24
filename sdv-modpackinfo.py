@@ -25,8 +25,13 @@ import re
 import urllib.request
 
 # To change the format, modify the lines below:
+
+# Markdown format:
+output_file = open('modlist.md', 'w')
 format_url = "- [{Name}]({url}), v{Version} by **{Author}**: {Description}"
 format_nourl = "- {Name}, v{Version} by **{Author}**: {Description}"
+
+####################################
 
 # Scan the manifest.json files of the mods in the pack
 mods = []
@@ -158,12 +163,14 @@ def report(info):
   url = guess_url(info)
   
   if url:
-    print(format_url.format(url = url, **info))
+    print(format_url.format(url = url, **info), file=output_file)
   else:
-    print(format_nourl.format(**info))
+    print(format_nourl.format(**info), file=output_file)
 
 print("Writing output", file=sys.stderr)
 for i in mods:
   report(i)
 
 print("Done ({0} mods, with {1} guessed and {2} better urls).".format(len(mods), stat_guessed, stat_better), file=sys.stderr)
+
+output_file.close()
